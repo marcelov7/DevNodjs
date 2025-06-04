@@ -186,6 +186,56 @@ app.get('/test-db', async (req, res) => {
     }
 });
 
+// Rota para verificar e criar usuário padrão
+app.get('/setup-admin', async (req, res) => {
+    try {
+        // Verificar se já existe algum usuário
+        const usuarios = await query('SELECT COUNT(*) as total FROM usuarios');
+        const totalUsuarios = usuarios[0]?.total || 0;
+
+        if (totalUsuarios > 0) {
+            return res.json({
+                success: true,
+                message: `Sistema já tem ${totalUsuarios} usuário(s) cadastrado(s)`
+            });
+        }
+
+        // Criar usuário padrão
+        const bcrypt = require('bcryptjs');
+        const senhaHash = await bcrypt.hash('admin123', 10);
+        
+        await query(`
+            INSERT INTO usuarios (
+                nome, username, email, senha, nivel_acesso, ativo, tenant_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        `, [
+            'Administrador',
+            'admin',
+            'admin@sistema.com',
+            senhaHash,
+            'admin_master',
+            true,
+            1
+        ]);
+
+        res.json({
+            success: true,
+            message: 'Usuário padrão criado com sucesso!',
+            credentials: {
+                username: 'admin',
+                password: 'admin123'
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Erro ao criar usuário padrão',
+            error: error.message
+        });
+    }
+});
+
 // Rotas da API
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/usuarios', require('./routes/usuarios'));
