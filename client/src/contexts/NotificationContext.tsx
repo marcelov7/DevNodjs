@@ -2,15 +2,19 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { io, Socket } from 'socket.io-client';
 import { useAuth } from './AuthContext';
 
-// Configuração da URL do servidor
+// Configuração da URL do servidor usando a mesma lógica da API
 const getServerUrl = (): string => {
   const isDevelopment = process.env.NODE_ENV === 'development';
   
   if (isDevelopment) {
     return process.env.REACT_APP_SERVER_URL || 'http://localhost:5000';
   } else {
-    // Em produção, usar variável de ambiente ou URL do Render
-    return process.env.REACT_APP_SERVER_URL || 'https://seu-backend.onrender.com';
+    // Usar a mesma URL da API, mas sem o /api
+    const apiUrl = process.env.REACT_APP_API_URL || 'https://server-poy8.onrender.com';
+    // Remover "Value:" se existir (mesmo problema da API)
+    const cleanUrl = apiUrl.replace(/^Value:\s*/, '').trim();
+    // Remover /api se existir para Socket.IO
+    return cleanUrl.replace(/\/api$/, '');
   }
 };
 
