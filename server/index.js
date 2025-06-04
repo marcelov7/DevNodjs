@@ -24,7 +24,8 @@ if (isProduction) {
     allowedOrigins = [
         process.env.CORS_ORIGIN || 'https://seu-frontend.vercel.app',
         'https://sistemasmc.vercel.app', // Adicionar seu domínio aqui
-        'https://systemsmc.vercel.app'   // Caso tenha outro nome
+        'https://systemsmc.vercel.app',   // Caso tenha outro nome
+        'https://dev-nodjs.vercel.app'    // Domínio atual do Vercel
     ];
 } else {
     // Em desenvolvimento, usar detecção automática
