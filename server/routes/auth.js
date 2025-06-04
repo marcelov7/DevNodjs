@@ -100,11 +100,26 @@ router.post('/login', loginValidation, async (req, res) => {
 // POST /api/auth/verify - Verificar token
 router.post('/verify', verifyToken, async (req, res) => {
     try {
+        // Buscar dados completos do usuário no banco
+        const usuarios = await query(
+            'SELECT id, nome, username, email, setor, nivel_acesso, ativo, data_criacao FROM usuarios WHERE id = ? AND ativo = true',
+            [req.user.id]
+        );
+
+        if (usuarios.length === 0) {
+            return res.status(401).json({
+                success: false,
+                message: 'Usuário não encontrado'
+            });
+        }
+
+        const usuario = usuarios[0];
+
         res.json({
             success: true,
             message: 'Token válido',
             data: {
-                usuario: req.user
+                usuario
             }
         });
     } catch (error) {
@@ -127,10 +142,25 @@ router.post('/logout', (req, res) => {
 // GET /api/auth/me - Dados do usuário logado
 router.get('/me', verifyToken, async (req, res) => {
     try {
+        // Buscar dados completos do usuário no banco
+        const usuarios = await query(
+            'SELECT id, nome, username, email, setor, nivel_acesso, ativo, data_criacao FROM usuarios WHERE id = ? AND ativo = true',
+            [req.user.id]
+        );
+
+        if (usuarios.length === 0) {
+            return res.status(401).json({
+                success: false,
+                message: 'Usuário não encontrado'
+            });
+        }
+
+        const usuario = usuarios[0];
+
         res.json({
             success: true,
             data: {
-                usuario: req.user
+                usuario
             }
         });
     } catch (error) {
