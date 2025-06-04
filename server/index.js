@@ -236,26 +236,20 @@ app.get('/setup-admin', async (req, res) => {
     }
 });
 
-// Rota para debug - listar usuários
+// Rota temporária para debug - listar usuários
 app.get('/debug-users', async (req, res) => {
     try {
-        const usuarios = await query(`
-            SELECT id, nome, username, email, nivel_acesso, ativo 
-            FROM usuarios 
-            WHERE ativo = true 
-            ORDER BY nome
-        `);
-
+        const { query } = require('./config/database');
+        const users = await query('SELECT id, username, email, nome, nivel_acesso, ativo FROM usuarios LIMIT 5');
         res.json({
             success: true,
-            message: `${usuarios.length} usuários encontrados`,
-            data: usuarios
+            totalUsers: users.length,
+            users: users
         });
-
     } catch (error) {
+        console.error('Erro ao buscar usuários:', error);
         res.status(500).json({
             success: false,
-            message: 'Erro ao buscar usuários',
             error: error.message
         });
     }
