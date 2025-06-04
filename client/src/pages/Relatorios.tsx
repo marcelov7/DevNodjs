@@ -92,8 +92,8 @@ const Relatorios: React.FC = () => {
   const [relatorios, setRelatorios] = useState<Relatorio[]>([]);
   const [locais, setLocais] = useState<Local[]>([]);
   const [equipamentos, setEquipamentos] = useState<Equipamento[]>([]);
-  const [equipamentosPorLocal, setEquipamentosPorLocal] = useState<Equipamento[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [equipamentosFiltrados, setEquipamentosFiltrados] = useState<Equipamento[]>([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -257,7 +257,7 @@ const Relatorios: React.FC = () => {
 
   const carregarEquipamentosPorLocal = async (localId: string) => {
     if (!localId) {
-      setEquipamentosPorLocal([]);
+      setEquipamentosFiltrados([]);
       return;
     }
 
@@ -273,12 +273,12 @@ const Relatorios: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
-          setEquipamentosPorLocal(data.data.equipamentos);
+          setEquipamentosFiltrados(data.data.equipamentos);
         }
       }
     } catch (error) {
       console.error('Erro ao carregar equipamentos:', error);
-      setEquipamentosPorLocal([]);
+      setEquipamentosFiltrados([]);
     }
   };
 
@@ -288,16 +288,25 @@ const Relatorios: React.FC = () => {
         // Para visualização, buscar dados completos do relatório incluindo imagens
         try {
           setLoading(true);
-          const response = await axios.get(`/relatorios/${relatorioParaEditar.id}`);
+          const token = localStorage.getItem('token');
+          const response = await fetch(`${API_BASE_URL}/relatorios/${relatorioParaEditar.id}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
           
-          if (response.data.success) {
-            const relatorioCompleto = response.data.data.relatorio;
-            setRelatorioEditando(relatorioCompleto);
-            
-            // Não precisamos carregar equipamentos para visualização
-          } else {
-            setError('Erro ao carregar dados completos do relatório');
-            return;
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+              const relatorioCompleto = data.data.relatorio;
+              setRelatorioEditando(relatorioCompleto);
+              
+              // Não precisamos carregar equipamentos para visualização
+            } else {
+              setError('Erro ao carregar dados completos do relatório');
+              return;
+            }
           }
         } catch (error: any) {
           setError('Erro ao carregar dados do relatório');
@@ -347,7 +356,14 @@ const Relatorios: React.FC = () => {
 
   const marcarComoVisualizado = async (relatorioId: number) => {
     try {
-      await axios.post(`/relatorios/${relatorioId}/marcar-visualizado`);
+      const token = localStorage.getItem('token');
+      await fetch(`${API_BASE_URL}/relatorios/${relatorioId}/marcar-visualizado`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       console.log('📖 Relatório marcado como visualizado');
       // Não precisa recarregar toda a lista, apenas remover o indicador localmente
       setRelatorios(prevRelatorios => 
@@ -401,28 +417,36 @@ const Relatorios: React.FC = () => {
       }
 
       const url = relatorioEditando 
-        ? `/api/relatorios/${relatorioEditando.id}`
-        : '/api/relatorios';
+        ? `${API_BASE_URL}/relatorios/${relatorioEditando.id}`
+        : `${API_BASE_URL}/relatorios`;
       
       const method = relatorioEditando ? 'PUT' : 'POST';
+      const token = localStorage.getItem('token');
 
-      const response = await axios({
+      const response = await fetch(url, {
         method,
-        url,
-        data: formData,
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
       });
 
-      if (response.data.success) {
-        setSuccess(relatorioEditando ? 'Relatório atualizado com sucesso!' : 'Relatório criado com sucesso!');
-        fecharModal();
-        carregarDados();
-        setTimeout(() => setSuccess(''), 3000);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setSuccess(relatorioEditando ? 'Relatório atualizado com sucesso!' : 'Relatório criado com sucesso!');
+          fecharModal();
+          carregarDados();
+          setTimeout(() => setSuccess(''), 3000);
+        } else {
+          throw new Error(data.message || 'Erro ao salvar relatório');
+        }
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erro ao salvar relatório');
       }
     } catch (error: any) {
-      setError(error.response?.data?.message || 'Erro ao salvar relatório');
+      setError(error.message || 'Erro ao salvar relatório');
       setTimeout(() => setError(''), 3000);
     } finally {
       setLoading(false);
@@ -478,16 +502,24 @@ const Relatorios: React.FC = () => {
     
     try {
       setLoading(true);
-      await axios.post(`/relatorios/${relatorioId}/historico`, {
-        descricao: 'Relatório reaberto para revisão',
-        progresso: 0
+      const token = localStorage.getItem('token');
+      await fetch(`${API_BASE_URL}/relatorios/${relatorioId}/historico`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          descricao: 'Relatório reaberto para revisão',
+          progresso: 0
+        })
       });
       
       setSuccess('Relatório reaberto com sucesso!');
       carregarDados();
       setTimeout(() => setSuccess(''), 3000);
     } catch (error: any) {
-      setError(error.response?.data?.message || 'Erro ao reabrir relatório');
+      setError('Erro ao reabrir relatório');
       setTimeout(() => setError(''), 3000);
     } finally {
       setLoading(false);
@@ -547,30 +579,39 @@ const Relatorios: React.FC = () => {
     try {
       setLoading(true);
       
-      const response = await axios.get(`/relatorios/${relatorioId}/pdf`, {
-        responseType: 'blob'
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/relatorios/${relatorioId}/pdf`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
-      // Criar URL para download
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      
-      // Nome do arquivo
-      const nomeArquivo = `relatorio-${relatorioId}-${titulo.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
-      link.setAttribute('download', nomeArquivo);
-      
-      // Fazer download
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      if (response.ok) {
+        const blob = await response.blob();
+        
+        // Criar URL para download
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        
+        // Nome do arquivo
+        const nomeArquivo = `relatorio-${relatorioId}-${titulo.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+        link.setAttribute('download', nomeArquivo);
+        
+        // Fazer download
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
 
-      setSuccess('PDF exportado com sucesso!');
-      setTimeout(() => setSuccess(''), 3000);
+        setSuccess('PDF exportado com sucesso!');
+        setTimeout(() => setSuccess(''), 3000);
+      } else {
+        throw new Error('Erro ao exportar PDF');
+      }
     } catch (error: any) {
       console.error('Erro ao exportar PDF:', error);
-      setError(error.response?.data?.message || 'Erro ao exportar PDF');
+      setError('Erro ao exportar PDF');
       setTimeout(() => setError(''), 3000);
     } finally {
       setLoading(false);
@@ -1407,7 +1448,7 @@ const Relatorios: React.FC = () => {
                         disabled={!formulario.local_id}
                       >
                         <option value="">Selecione um equipamento</option>
-                        {equipamentosPorLocal.map(equipamento => (
+                        {equipamentosFiltrados.map(equipamento => (
                           <option key={equipamento.id} value={equipamento.id}>
                             {equipamento.nome} {equipamento.codigo && `(${equipamento.codigo})`}
                           </option>
