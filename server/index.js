@@ -61,24 +61,35 @@ app.use(helmet({
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Permitir requisições sem origin (mobile apps, etc.)
-        if (!origin) return callback(null, true);
+        console.log(`🔍 CORS verificando origem: ${origin}`);
         
-        if (allowedOrigins.some(allowedOrigin => {
+        // Permitir requisições sem origin (mobile apps, etc.)
+        if (!origin) {
+            console.log('✅ CORS permitiu requisição sem origin');
+            return callback(null, true);
+        }
+        
+        // Verificar se a origem está na lista permitida
+        const isAllowed = allowedOrigins.some(allowedOrigin => {
             if (typeof allowedOrigin === 'string') {
                 return allowedOrigin === origin;
             } else if (allowedOrigin instanceof RegExp) {
                 return allowedOrigin.test(origin);
             }
             return false;
-        })) {
+        });
+        
+        if (isAllowed) {
+            console.log(`✅ CORS permitiu origem: ${origin}`);
             callback(null, true);
         } else {
             console.log(`❌ CORS bloqueou origem: ${origin}`);
+            console.log(`📋 Origens permitidas:`, allowedOrigins);
             callback(new Error('Não permitido pelo CORS'));
         }
     },
-    credentials: true
+    credentials: true,
+    optionsSuccessStatus: 200 // Para suporte a browsers antigos
 }));
 
 app.use(express.json({ limit: '10mb' }));
