@@ -20,6 +20,10 @@ const getServerUrl = (): string => {
 
 const SERVER_URL = getServerUrl();
 
+console.log('🔌 Socket.IO - Ambiente:', process.env.NODE_ENV);
+console.log('🔌 Socket.IO - REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+console.log('🔌 Socket.IO - SERVER_URL final:', SERVER_URL);
+
 interface Notificacao {
   id: number;
   tipo: 'relatorio' | 'sistema' | 'permissao';
