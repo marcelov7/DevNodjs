@@ -4,11 +4,16 @@
   "description": "Sistema completo de relatórios com gestão de usuários, locais, equipamentos e motores",
   "main": "server/index.js",
   "scripts": {
+    "start": "cd server && npm start",
+    "start-debug": "cd server && npm run start-debug",
+    "start-minimal": "cd server && npm run start-minimal",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd server && npm run dev",
     "client": "cd client && npm start",
     "install-all": "npm install && cd server && npm install && cd ../client && npm install",
-    "build": "cd client && npm run build"
+    "build": "cd client && npm run build",
+    "verify": "cd server && npm run verify",
+    "simple-test": "cd server && npm run simple-test"
   },
   "keywords": [
     "nodejs",
