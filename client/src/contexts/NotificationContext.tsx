@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useAuth } from './AuthContext';
+import { ensureArray, safeMap } from '../utils/arrayHelpers';
 
 // Configuração da URL do servidor usando a mesma lógica da API
 const getServerUrl = (): string => {
@@ -97,7 +98,10 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
         console.log('🔔 Nova notificação recebida:', notificacao);
         
         // Adicionar notificação ao início da lista
-        setNotificacoes(prev => [notificacao, ...prev]);
+        setNotificacoes(prev => {
+          const prevArray = ensureArray(prev);
+          return [notificacao, ...prevArray];
+        });
         
         // Atualizar contador
         setTotalNaoLidas(prev => prev + 1);
@@ -118,21 +122,28 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
       });
 
       newSocket.on('notificacao_lida', (data: { id: number }) => {
-        setNotificacoes(prev =>
-          prev.map(n => n.id === data.id ? { ...n, lida: true } : n)
-        );
+        setNotificacoes(prev => {
+          const prevArray = ensureArray(prev);
+          return safeMap(prevArray, n => n.id === data.id ? { ...n, lida: true } : n);
+        });
         setTotalNaoLidas(prev => Math.max(0, prev - 1));
       });
 
       newSocket.on('todas_notificacoes_lidas', () => {
-        setNotificacoes(prev => prev.map(n => ({ ...n, lida: true })));
+        setNotificacoes(prev => {
+          const prevArray = ensureArray(prev);
+          return safeMap(prevArray, n => ({ ...n, lida: true }));
+        });
         setTotalNaoLidas(0);
       });
 
       newSocket.on('notificacoes_carregadas', (data: { notificacoes: Notificacao[]; total_nao_lidas: number }) => {
         console.log('📋 Notificações carregadas:', data);
-        setNotificacoes(data.notificacoes);
-        setTotalNaoLidas(data.total_nao_lidas);
+        
+        // Garantir que notificacoes seja um array válido
+        const notificacoesSeguras = ensureArray(data.notificacoes);
+        setNotificacoes(notificacoesSeguras);
+        setTotalNaoLidas(data.total_nao_lidas || 0);
       });
 
       newSocket.on('erro', (data: { message: string }) => {
@@ -195,7 +206,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
 
   const value: NotificationContextType = {
     socket,
-    notificacoes,
+    notificacoes: ensureArray(notificacoes),
     totalNaoLidas,
     isConnected,
     marcarComoLida,
