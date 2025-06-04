@@ -2,8 +2,11 @@ import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import RelatorioHistorico from '../components/RelatorioHistorico';
+import { API_BASE_URL } from '../config/api';
 import ProgressBar from '../components/ProgressBar';
 import NotificationBadge from '../components/NotificationBadge';
+import Modal from '../components/Modal';
+import Tooltip from '../components/Tooltip';
 import { 
   FileText, 
   Plus, 
@@ -23,12 +26,12 @@ import {
   Upload,
   Image,
   Trash2,
-  Download,
   ChevronLeft,
   ChevronRight,
-  Activity
+  Activity,
+  Download,
+  Settings
 } from 'lucide-react';
-import Tooltip from '../components/Tooltip';
 
 interface Relatorio {
   id: number;
@@ -187,12 +190,21 @@ const Relatorios: React.FC = () => {
       if (filtros.data_fim) params.append('data_fim', filtros.data_fim);
       if (filtros.atividade_recente) params.append('atividade_recente', 'true');
 
-      const response = await axios.get(`/relatorios?${params}`);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/relatorios?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       
-      if (response.data.success) {
-        setRelatorios(response.data.data.relatorios);
-        setTotalPaginas(response.data.data.pagination.pages);
-        setTotalRelatorios(response.data.data.pagination.total);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setRelatorios(data.data.relatorios);
+          setTotalPaginas(data.data.pagination.pages);
+          setTotalRelatorios(data.data.pagination.total);
+        }
       }
     } catch (error) {
       setError('Erro ao carregar relatórios');
@@ -204,9 +216,19 @@ const Relatorios: React.FC = () => {
 
   const carregarLocais = async () => {
     try {
-      const response = await axios.get('/locais/simples');
-      if (response.data.success) {
-        setLocais(response.data.data.locais);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/locais/simples`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setLocais(data.data.locais);
+        }
       }
     } catch (error) {
       console.error('Erro ao carregar locais:', error);
@@ -240,9 +262,19 @@ const Relatorios: React.FC = () => {
     }
 
     try {
-      const response = await axios.get(`/equipamentos/por-local/${localId}`);
-      if (response.data.success) {
-        setEquipamentosPorLocal(response.data.data.equipamentos);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/equipamentos/por-local/${localId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setEquipamentosPorLocal(data.data.equipamentos);
+        }
       }
     } catch (error) {
       console.error('Erro ao carregar equipamentos:', error);

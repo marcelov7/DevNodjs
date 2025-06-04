@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   Settings, 
@@ -133,22 +133,29 @@ const Equipamentos: React.FC = () => {
       setLoading(true);
       const params = new URLSearchParams({
         page: paginaAtual.toString(),
-        limit: itemsPerPage.toString()
+        limit: itemsPerPage.toString(),
+        ...(filtros.nome && { search: filtros.nome }),
+        ...(filtros.local_id && { local_id: filtros.local_id }),
+        ...(filtros.status_operacional && { status_operacional: filtros.status_operacional }),
+        ...(filtros.ativo && { ativo: filtros.ativo }),
+        ...(filtros.tipo && { tipo: filtros.tipo })
       });
 
-      // Adicionar filtros apenas se tiverem valor
-      if (filtros.nome) params.append('search', filtros.nome);
-      if (filtros.local_id) params.append('local_id', filtros.local_id);
-      if (filtros.status_operacional) params.append('status_operacional', filtros.status_operacional);
-      if (filtros.ativo) params.append('ativo', filtros.ativo);
-      if (filtros.tipo) params.append('tipo', filtros.tipo);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/equipamentos?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
-      const response = await axios.get(`/equipamentos?${params}`);
-      
-      if (response.data.success) {
-        setEquipamentos(response.data.data.equipamentos);
-        setTotalPaginas(response.data.data.pagination.pages);
-        setTotalEquipamentos(response.data.data.pagination.total);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setEquipamentos(data.data.equipamentos);
+          setTotalPaginas(data.data.pagination.pages);
+          setTotalEquipamentos(data.data.pagination.total);
+        }
       }
     } catch (error) {
       setError('Erro ao carregar equipamentos');
@@ -160,20 +167,25 @@ const Equipamentos: React.FC = () => {
 
   const carregarLocais = async () => {
     try {
-      const response = await axios.get('/locais/simples');
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/locais/simples`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       
-      if (response.data.success) {
-        setLocais(response.data.data.locais);
-      } else {
-        setError('Erro ao carregar lista de locais');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setLocais(data.data.locais);
+        } else {
+          setError('Erro ao carregar lista de locais');
+        }
       }
     } catch (error: any) {
       console.error('Erro ao carregar locais:', error);
-      if (error.response?.status === 401) {
-        setError('Sessão expirada. Por favor, faça login novamente.');
-      } else {
-        setError('Erro ao carregar lista de locais');
-      }
+      setError('Erro ao carregar lista de locais');
     }
   };
 
@@ -270,10 +282,24 @@ const Equipamentos: React.FC = () => {
       };
       
       if (equipamentoEditando) {
-        await axios.put(`/equipamentos/${equipamentoEditando.id}`, dadosFormulario);
+        await fetch(`${API_BASE_URL}/equipamentos/${equipamentoEditando.id}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(dadosFormulario)
+        });
         setSuccess('Equipamento atualizado com sucesso!');
       } else {
-        await axios.post('/equipamentos', dadosFormulario);
+        await fetch(`${API_BASE_URL}/equipamentos`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(dadosFormulario)
+        });
         setSuccess('Equipamento criado com sucesso!');
       }
       
@@ -294,7 +320,12 @@ const Equipamentos: React.FC = () => {
     }
 
     try {
-      await axios.delete(`/equipamentos/${id}`);
+      await fetch(`${API_BASE_URL}/equipamentos/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
       setSuccess('Equipamento desativado com sucesso!');
       carregarDados();
       setTimeout(() => setSuccess(''), 3000);

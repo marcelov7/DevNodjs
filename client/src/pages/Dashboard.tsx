@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { API_BASE_URL } from '../config/api';
 import { useAccessibility } from '../contexts/AccessibilityContext';
 
 interface Estatisticas {
@@ -40,18 +40,36 @@ const Dashboard: React.FC = () => {
     try {
       setLoading(true);
       
+      const token = localStorage.getItem('token');
+      
       // Buscar estatísticas
       const [estatisticasRes, relatoriosRes] = await Promise.all([
-        axios.get('/dashboard/estatisticas'),
-        axios.get('/dashboard/relatorios-recentes?limit=5')
+        fetch(`${API_BASE_URL}/dashboard/estatisticas`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }),
+        fetch(`${API_BASE_URL}/dashboard/relatorios-recentes?limit=5`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        })
       ]);
 
-      if (estatisticasRes.data.success) {
-        setEstatisticas(estatisticasRes.data.data);
+      if (estatisticasRes.ok) {
+        const estatisticasData = await estatisticasRes.json();
+        if (estatisticasData.success) {
+          setEstatisticas(estatisticasData.data);
+        }
       }
 
-      if (relatoriosRes.data.success) {
-        setRelatoriosRecentes(relatoriosRes.data.data.relatorios);
+      if (relatoriosRes.ok) {
+        const relatoriosData = await relatoriosRes.json();
+        if (relatoriosData.success) {
+          setRelatoriosRecentes(relatoriosData.data.relatorios);
+        }
       }
 
     } catch (error) {
