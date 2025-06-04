@@ -236,6 +236,31 @@ app.get('/setup-admin', async (req, res) => {
     }
 });
 
+// Rota para debug - listar usuários
+app.get('/debug-users', async (req, res) => {
+    try {
+        const usuarios = await query(`
+            SELECT id, nome, username, email, nivel_acesso, ativo 
+            FROM usuarios 
+            WHERE ativo = true 
+            ORDER BY nome
+        `);
+
+        res.json({
+            success: true,
+            message: `${usuarios.length} usuários encontrados`,
+            data: usuarios
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Erro ao buscar usuários',
+            error: error.message
+        });
+    }
+});
+
 // Rotas da API
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/usuarios', require('./routes/usuarios'));
