@@ -7,7 +7,7 @@ const { createServer } = require('http');
 const { Server } = require('socket.io');
 const jwt = require('jsonwebtoken');
 
-const { testConnection, initializeDatabase } = require('./config/database');
+const { testConnection, initializeDatabase, query } = require('./config/database');
 const NotificationService = require('./services/notificationService');
 const { getAllowedOrigins } = require('./utils/networkUtils');
 const { refreshPermissionsCache } = require('./middleware/permissions');
