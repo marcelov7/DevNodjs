@@ -98,7 +98,7 @@ export const Layout: React.FC = () => {
               <div>
                 <div className="inline-flex items-center justify-center h-9 w-9 rounded-full bg-primary-500">
                   <span className="text-sm font-medium leading-none text-white">
-                    {usuario?.nome.charAt(0).toUpperCase()}
+                    {usuario?.nome?.charAt(0)?.toUpperCase() || 'U'}
                   </span>
                 </div>
               </div>
@@ -166,7 +166,7 @@ export const Layout: React.FC = () => {
                 <div>
                   <div className="inline-flex items-center justify-center h-9 w-9 rounded-full bg-primary-500">
                     <span className="text-sm font-medium leading-none text-white">
-                      {usuario?.nome.charAt(0).toUpperCase()}
+                      {usuario?.nome?.charAt(0)?.toUpperCase() || 'U'}
                     </span>
                   </div>
                 </div>
@@ -227,7 +227,7 @@ export const Layout: React.FC = () => {
               >
                 <div className="h-8 w-8 bg-primary-600 rounded-full flex items-center justify-center">
                   <span className="text-sm font-medium text-white">
-                    {usuario?.nome?.charAt(0).toUpperCase()}
+                    {usuario?.nome?.charAt(0)?.toUpperCase() || 'U'}
                   </span>
                 </div>
                 <span className="text-sm font-medium">

@@ -16,7 +16,6 @@ const API_URLS = {
 export const API_BASE_URL = isProduction ? API_URLS.production : API_URLS.development;
 
 console.log('🌐 Ambiente:', process.env.NODE_ENV);
-console.log('🔗 REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
 console.log('🔗 API URL FINAL:', API_BASE_URL);
 
 // Configuração do axios
