@@ -90,7 +90,7 @@ const GerenciamentoNotificacoes: React.FC = () => {
   const carregarDados = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/notificacoes/gerenciamento');
+      const response = await axios.get('/notificacoes/gerenciamento');
       
       if (response.data.success) {
         const { estatisticas, usuarios, notificacoes_recentes, tipos_disponiveis } = response.data.data;

@@ -121,7 +121,7 @@ const Analisadores: React.FC = () => {
       if (filtros.check_date) params.append('check_date', filtros.check_date);
       if (filtros.ativo) params.append('ativo', filtros.ativo);
 
-      const response = await axios.get(`/api/analisadores?${params}`);
+      const response = await axios.get(`/analisadores?${params}`);
       
       if (response.data.success) {
         setAnalisadores(response.data.data.analisadores);
@@ -216,10 +216,10 @@ const Analisadores: React.FC = () => {
       };
       
       if (analisadorEditando) {
-        await axios.put(`/api/analisadores/${analisadorEditando.id}`, dadosFormulario);
+        await axios.put(`/analisadores/${analisadorEditando.id}`, dadosFormulario);
         setSuccess('Analisador atualizado com sucesso!');
       } else {
-        await axios.post('/api/analisadores', dadosFormulario);
+        await axios.post('/analisadores', dadosFormulario);
         setSuccess('Analisador criado com sucesso!');
       }
       
@@ -238,7 +238,7 @@ const Analisadores: React.FC = () => {
     if (!window.confirm('Tem certeza que deseja desativar este analisador?')) return;
     
     try {
-      await axios.delete(`/api/analisadores/${id}`);
+      await axios.delete(`/analisadores/${id}`);
       setSuccess('Analisador desativado com sucesso!');
       carregarDados();
       setTimeout(() => setSuccess(''), 3000);

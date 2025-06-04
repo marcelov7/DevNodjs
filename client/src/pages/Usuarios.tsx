@@ -217,7 +217,7 @@ const Usuarios: React.FC = () => {
         setSuccess('Usuário atualizado com sucesso!');
       } else {
         // Criar usuário
-        await axios.post('/api/usuarios', formulario);
+        await axios.post('/usuarios', formulario);
         setSuccess('Usuário criado com sucesso!');
       }
       

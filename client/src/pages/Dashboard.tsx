@@ -42,8 +42,8 @@ const Dashboard: React.FC = () => {
       
       // Buscar estatísticas
       const [estatisticasRes, relatoriosRes] = await Promise.all([
-        axios.get('/api/dashboard/estatisticas'),
-        axios.get('/api/dashboard/relatorios-recentes?limit=5')
+        axios.get('/dashboard/estatisticas'),
+        axios.get('/dashboard/relatorios-recentes?limit=5')
       ]);
 
       if (estatisticasRes.data.success) {

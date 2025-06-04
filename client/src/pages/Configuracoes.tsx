@@ -141,7 +141,7 @@ const Configuracoes: React.FC = () => {
   };
 
   const carregarPermissoes = async () => {
-    const response = await axios.get('/api/configuracoes/permissoes');
+    const response = await axios.get('/configuracoes/permissoes');
     if (response.data.success) {
       setRecursos(response.data.data.recursos);
       setAcoes(response.data.data.acoes);
@@ -150,7 +150,7 @@ const Configuracoes: React.FC = () => {
   };
 
   const carregarUsuarios = async () => {
-    const response = await axios.get('/api/configuracoes/usuarios');
+    const response = await axios.get('/configuracoes/usuarios');
     if (response.data.success) {
       setUsuariosPorNivel(response.data.data.usuarios_por_nivel);
       setEstatisticas(response.data.data.estatisticas);
@@ -167,7 +167,7 @@ const Configuracoes: React.FC = () => {
       if (value) params.append(key, value);
     });
 
-    const response = await axios.get(`/api/configuracoes/auditoria?${params}`);
+    const response = await axios.get(`/configuracoes/auditoria?${params}`);
     if (response.data.success) {
       setAuditoria(response.data.data.auditoria);
       setTotalPaginasAuditoria(response.data.data.pagination.pages);
@@ -219,7 +219,7 @@ const Configuracoes: React.FC = () => {
     try {
       setSalvandoPermissoes(true);
       
-      const response = await axios.post('/api/configuracoes/permissoes/lote', {
+      const response = await axios.post('/configuracoes/permissoes/lote', {
         alteracoes: alteracoesPendentes
       });
 
@@ -228,7 +228,7 @@ const Configuracoes: React.FC = () => {
         setAlteracoesPendentes([]);
         
         // Atualizar cache do servidor
-        await axios.post('/api/configuracoes/cache/refresh');
+        await axios.post('/configuracoes/cache/refresh');
       }
     } catch (error: any) {
       setError(error.response?.data?.message || 'Erro ao salvar permissões');

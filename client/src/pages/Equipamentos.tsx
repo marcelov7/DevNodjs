@@ -143,7 +143,7 @@ const Equipamentos: React.FC = () => {
       if (filtros.ativo) params.append('ativo', filtros.ativo);
       if (filtros.tipo) params.append('tipo', filtros.tipo);
 
-      const response = await axios.get(`/api/equipamentos?${params}`);
+      const response = await axios.get(`/equipamentos?${params}`);
       
       if (response.data.success) {
         setEquipamentos(response.data.data.equipamentos);
@@ -160,7 +160,7 @@ const Equipamentos: React.FC = () => {
 
   const carregarLocais = async () => {
     try {
-      const response = await axios.get('/api/locais/simples');
+      const response = await axios.get('/locais/simples');
       
       if (response.data.success) {
         setLocais(response.data.data.locais);
@@ -270,10 +270,10 @@ const Equipamentos: React.FC = () => {
       };
       
       if (equipamentoEditando) {
-        await axios.put(`/api/equipamentos/${equipamentoEditando.id}`, dadosFormulario);
+        await axios.put(`/equipamentos/${equipamentoEditando.id}`, dadosFormulario);
         setSuccess('Equipamento atualizado com sucesso!');
       } else {
-        await axios.post('/api/equipamentos', dadosFormulario);
+        await axios.post('/equipamentos', dadosFormulario);
         setSuccess('Equipamento criado com sucesso!');
       }
       
@@ -294,7 +294,7 @@ const Equipamentos: React.FC = () => {
     }
 
     try {
-      await axios.delete(`/api/equipamentos/${id}`);
+      await axios.delete(`/equipamentos/${id}`);
       setSuccess('Equipamento desativado com sucesso!');
       carregarDados();
       setTimeout(() => setSuccess(''), 3000);

@@ -178,7 +178,7 @@ const Motores: React.FC = () => {
       if (filtros.rated_current_min) params.append('rated_current_min', filtros.rated_current_min);
       if (filtros.rated_current_max) params.append('rated_current_max', filtros.rated_current_max);
 
-      const response = await axios.get(`/api/motores?${params}`);
+      const response = await axios.get(`/motores?${params}`);
       
       if (response.data.success) {
         setMotores(response.data.data.motores);
@@ -195,7 +195,7 @@ const Motores: React.FC = () => {
 
   const carregarTiposUnicos = async () => {
     try {
-      const response = await axios.get('/api/motores/tipos/unicos');
+      const response = await axios.get('/motores/tipos/unicos');
       if (response.data.success) {
         setTiposUnicos(response.data.data);
       }
@@ -320,10 +320,10 @@ const Motores: React.FC = () => {
       };
 
       if (motorEditando) {
-        await axios.put(`/api/motores/${motorEditando.id}`, dadosFormulario);
+        await axios.put(`/motores/${motorEditando.id}`, dadosFormulario);
         setSuccess('Motor atualizado com sucesso!');
       } else {
-        await axios.post('/api/motores', dadosFormulario);
+        await axios.post('/motores', dadosFormulario);
         setSuccess('Motor criado com sucesso!');
       }
 
@@ -342,7 +342,7 @@ const Motores: React.FC = () => {
     if (!window.confirm('Tem certeza que deseja desativar este motor?')) return;
     
     try {
-      await axios.delete(`/api/motores/${id}`);
+      await axios.delete(`/motores/${id}`);
       setSuccess('Motor desativado com sucesso!');
       carregarDados();
       setTimeout(() => setSuccess(''), 3000);
@@ -364,7 +364,7 @@ const Motores: React.FC = () => {
 
   const downloadTemplate = async () => {
     try {
-      const response = await axios.get('/api/motores/csv-template', {
+      const response = await axios.get('/motores/csv-template', {
         responseType: 'blob', // Para receber o arquivo como blob
       });
 
@@ -414,7 +414,7 @@ const Motores: React.FC = () => {
       const formData = new FormData();
       formData.append('csv', arquivoCSV);
 
-      const response = await axios.post('/api/motores/importar-csv', formData, {
+      const response = await axios.post('/motores/importar-csv', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

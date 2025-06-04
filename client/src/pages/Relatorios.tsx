@@ -204,7 +204,7 @@ const Relatorios: React.FC = () => {
 
   const carregarLocais = async () => {
     try {
-      const response = await axios.get('/api/locais/simples');
+      const response = await axios.get('/locais/simples');
       if (response.data.success) {
         setLocais(response.data.data.locais);
       }

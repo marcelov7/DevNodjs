@@ -164,7 +164,7 @@ const Locais: React.FC = () => {
         await axios.put(`/api/locais/${localEditando.id}`, dadosFormulario);
         setSuccess('Local atualizado com sucesso!');
       } else {
-        await axios.post('/api/locais', dadosFormulario);
+        await axios.post('/locais', dadosFormulario);
         setSuccess('Local criado com sucesso!');
       }
       

@@ -68,7 +68,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Admin Master tem todas as permissões
       if (usuario.nivel_acesso === 'admin_master') {
         // Buscar todos os recursos e ações para dar permissão total
-        const response = await axios.get('/api/configuracoes/permissoes');
+        const response = await axios.get('/configuracoes/permissoes');
         if (response.data.success) {
           const { recursos, acoes } = response.data.data;
           const todasPermissoes: PermissoesUsuario = {};
@@ -85,7 +85,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       // Para outros usuários, buscar permissões específicas
-      const response = await axios.get('/api/auth/permissions');
+      const response = await axios.get('/auth/permissions');
       
       if (response.data.success) {
         const permissoesCarregadas = response.data.data.permissoes || {};
@@ -104,7 +104,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const verificarToken = async () => {
       if (token) {
         try {
-          const response = await axios.post('/api/auth/verify');
+          const response = await axios.post('/auth/verify');
           if (response.data.success) {
             setUsuario(response.data.data.usuario);
           } else {
@@ -132,7 +132,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setLoginLoading(true);
       
-      const response = await axios.post('/api/auth/login', {
+      const response = await axios.post('/auth/login', {
         identifier,
         senha
       });
