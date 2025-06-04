@@ -22,16 +22,18 @@ let allowedOrigins;
 if (isProduction) {
     // Em produção, usar CORS_ORIGIN do ambiente ou padrão
     allowedOrigins = [
-        process.env.CORS_ORIGIN || 'https://seu-frontend.vercel.app',
-        'https://sistemasmc.vercel.app', // Adicionar seu domínio aqui
-        'https://systemsmc.vercel.app',   // Caso tenha outro nome
-        'https://dev-nodjs.vercel.app'    // Domínio atual do Vercel
-    ];
+        'https://dev-nodjs.vercel.app',    // Domínio atual do Vercel (PRIORITÁRIO)
+        'https://sistemasmc.vercel.app',   // Adicionar seu domínio aqui
+        'https://systemsmc.vercel.app',    // Caso tenha outro nome
+        process.env.CORS_ORIGIN || 'https://seu-frontend.vercel.app' // Fallback
+    ].filter(Boolean); // Remove valores undefined/null
 } else {
     // Em desenvolvimento, usar detecção automática
     allowedOrigins = getAllowedOrigins();
 }
 
+console.log('🌐 Ambiente:', process.env.NODE_ENV);
+console.log('🌐 CORS_ORIGIN env:', process.env.CORS_ORIGIN);
 console.log('🌐 Origens permitidas para CORS:', allowedOrigins);
 
 const io = new Server(server, {
@@ -231,25 +233,6 @@ app.get('/setup-admin', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Erro ao criar usuário padrão',
-            error: error.message
-        });
-    }
-});
-
-// Rota temporária para debug - listar usuários
-app.get('/debug-users', async (req, res) => {
-    try {
-        const { query } = require('./config/database');
-        const users = await query('SELECT id, username, email, nome, nivel_acesso, ativo FROM usuarios LIMIT 5');
-        res.json({
-            success: true,
-            totalUsers: users.length,
-            users: users
-        });
-    } catch (error) {
-        console.error('Erro ao buscar usuários:', error);
-        res.status(500).json({
-            success: false,
             error: error.message
         });
     }

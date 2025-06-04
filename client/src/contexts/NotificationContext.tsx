@@ -69,7 +69,11 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
       const newSocket = io(SERVER_URL, {
         auth: {
           token: token
-        }
+        },
+        transports: ['websocket', 'polling'], // Tentar WebSocket primeiro
+        withCredentials: true,
+        timeout: 10000,
+        forceNew: true // Força nova conexão para evitar cache
       });
 
       // Eventos de conexão
