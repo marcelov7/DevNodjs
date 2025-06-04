@@ -1,3 +1,8 @@
+const express = require('express');
+const router = express.Router();
+const { verifyToken } = require('../middleware/auth');
+const { query } = require('../config/database');
+
 // Rota para admin_master gerenciar notificações do tenant
 router.get('/gerenciamento', verifyToken, async (req, res) => {
     try {
@@ -220,4 +225,6 @@ router.get('/gerenciamento/todas', verifyToken, async (req, res) => {
             message: 'Erro interno do servidor'
         });
     }
-}); 
+});
+
+module.exports = router; 
