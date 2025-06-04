@@ -266,7 +266,6 @@ console.log('🔄 Carregando rotas da API...');
 
 console.log('📂 Verificando se arquivo auth.js existe...');
 const fs = require('fs');
-const path = require('path');
 const authPath = path.join(__dirname, 'routes', 'auth.js');
 console.log('📍 Caminho do arquivo:', authPath);
 console.log('📁 Arquivo existe:', fs.existsSync(authPath));
