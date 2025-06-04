@@ -24,6 +24,6 @@
     }
   ],
   "env": {
-    "REACT_APP_API_URL": "https://server-poy8.onrender.com/api"
+    "REACT_APP_API_URL": "https://server-poy8.onrender.com"
   }
 } 
