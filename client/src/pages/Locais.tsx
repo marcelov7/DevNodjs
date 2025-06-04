@@ -89,7 +89,7 @@ const Locais: React.FC = () => {
       if (filtros.nome) params.append('search', filtros.nome);
       if (filtros.ativo) params.append('ativo', filtros.ativo);
 
-      const response = await axios.get(`/api/locais?${params}`);
+      const response = await axios.get(`/locais?${params}`);
       
       if (response.data.success) {
         setLocais(response.data.data.locais);
@@ -161,7 +161,7 @@ const Locais: React.FC = () => {
       };
       
       if (localEditando) {
-        await axios.put(`/api/locais/${localEditando.id}`, dadosFormulario);
+        await axios.put(`/locais/${localEditando.id}`, dadosFormulario);
         setSuccess('Local atualizado com sucesso!');
       } else {
         await axios.post('/locais', dadosFormulario);
@@ -185,7 +185,7 @@ const Locais: React.FC = () => {
     }
 
     try {
-      await axios.delete(`/api/locais/${id}`);
+      await axios.delete(`/locais/${id}`);
       setSuccess('Local desativado com sucesso!');
       carregarLocais();
       setTimeout(() => setSuccess(''), 3000);

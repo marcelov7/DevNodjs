@@ -117,7 +117,7 @@ const GerenciamentoNotificacoes: React.FC = () => {
 
     try {
       setSalvando(true);
-      await axios.put(`/api/notificacoes/gerenciamento/usuario/${usuarioSelecionado.id}/preferencias`, {
+      await axios.put(`/notificacoes/gerenciamento/usuario/${usuarioSelecionado.id}/preferencias`, {
         preferencias: preferenciasEditando
       });
 

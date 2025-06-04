@@ -114,7 +114,7 @@ const RelatorioHistorico: React.FC<RelatorioHistoricoProps> = ({
       setLoading(true);
       
       // Carregar dados do relatório com histórico
-      const response = await axios.get(`/api/relatorios/${relatorioId}`);
+      const response = await axios.get(`/relatorios/${relatorioId}`);
       if (response.data.success) {
         setRelatorio(response.data.data.relatorio);
         setHistorico(response.data.data.historico || []);
@@ -129,7 +129,7 @@ const RelatorioHistorico: React.FC<RelatorioHistoricoProps> = ({
       if (response.data.data.relatorio?.pode_gerenciar_atribuicoes) {
         console.log('🔄 Carregando usuários disponíveis para relatório:', relatorioId);
         try {
-          const usuariosResponse = await axios.get(`/api/relatorios/${relatorioId}/usuarios-disponiveis`);
+          const usuariosResponse = await axios.get(`/relatorios/${relatorioId}/usuarios-disponiveis`);
           console.log('📊 Resposta dos usuários:', usuariosResponse.data);
           
           if (usuariosResponse.data.success) {
@@ -178,7 +178,7 @@ const RelatorioHistorico: React.FC<RelatorioHistoricoProps> = ({
         formData.append('anexos', arquivo);
       });
 
-      await axios.post(`/api/relatorios/${relatorioId}/historico`, formData, {
+      await axios.post(`/relatorios/${relatorioId}/historico`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -202,7 +202,7 @@ const RelatorioHistorico: React.FC<RelatorioHistoricoProps> = ({
     try {
       setLoading(true);
       
-      const response = await axios.post(`/api/relatorios/${relatorioId}/atribuicoes`, {
+      const response = await axios.post(`/relatorios/${relatorioId}/atribuicoes`, {
         usuario_ids: usuariosSelecionados
       });
 
@@ -234,7 +234,7 @@ const RelatorioHistorico: React.FC<RelatorioHistoricoProps> = ({
   const construirUrlImagem = (anexo: any) => {
     // Usar o nome_arquivo que contém o nome gerado pelo multer
     const filename = anexo.nome_arquivo;
-    const url = `/api/relatorios/uploads/${filename}`;
+    const url = `/relatorios/uploads/${filename}`;
     return url;
   };
 

@@ -187,7 +187,7 @@ const Relatorios: React.FC = () => {
       if (filtros.data_fim) params.append('data_fim', filtros.data_fim);
       if (filtros.atividade_recente) params.append('atividade_recente', 'true');
 
-      const response = await axios.get(`/api/relatorios?${params}`);
+      const response = await axios.get(`/relatorios?${params}`);
       
       if (response.data.success) {
         setRelatorios(response.data.data.relatorios);
@@ -240,7 +240,7 @@ const Relatorios: React.FC = () => {
     }
 
     try {
-      const response = await axios.get(`/api/equipamentos/por-local/${localId}`);
+      const response = await axios.get(`/equipamentos/por-local/${localId}`);
       if (response.data.success) {
         setEquipamentosPorLocal(response.data.data.equipamentos);
       }
@@ -256,7 +256,7 @@ const Relatorios: React.FC = () => {
         // Para visualização, buscar dados completos do relatório incluindo imagens
         try {
           setLoading(true);
-          const response = await axios.get(`/api/relatorios/${relatorioParaEditar.id}`);
+          const response = await axios.get(`/relatorios/${relatorioParaEditar.id}`);
           
           if (response.data.success) {
             const relatorioCompleto = response.data.data.relatorio;
@@ -315,7 +315,7 @@ const Relatorios: React.FC = () => {
 
   const marcarComoVisualizado = async (relatorioId: number) => {
     try {
-      await axios.post(`/api/relatorios/${relatorioId}/marcar-visualizado`);
+      await axios.post(`/relatorios/${relatorioId}/marcar-visualizado`);
       console.log('📖 Relatório marcado como visualizado');
       // Não precisa recarregar toda a lista, apenas remover o indicador localmente
       setRelatorios(prevRelatorios => 
@@ -446,7 +446,7 @@ const Relatorios: React.FC = () => {
     
     try {
       setLoading(true);
-      await axios.post(`/api/relatorios/${relatorioId}/historico`, {
+      await axios.post(`/relatorios/${relatorioId}/historico`, {
         descricao: 'Relatório reaberto para revisão',
         progresso: 0
       });
@@ -515,7 +515,7 @@ const Relatorios: React.FC = () => {
     try {
       setLoading(true);
       
-      const response = await axios.get(`/api/relatorios/${relatorioId}/pdf`, {
+      const response = await axios.get(`/relatorios/${relatorioId}/pdf`, {
         responseType: 'blob'
       });
 

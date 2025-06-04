@@ -127,7 +127,7 @@ const Usuarios: React.FC = () => {
         ...Object.fromEntries(Object.entries(filtros).filter(([_, v]) => v !== ''))
       });
 
-      const response = await axios.get(`/api/usuarios?${params}`);
+      const response = await axios.get(`/usuarios?${params}`);
       
       if (response.data.success) {
         setUsuarios(response.data.data.usuarios);
@@ -213,7 +213,7 @@ const Usuarios: React.FC = () => {
           delete (dados as any).senha; // Remove senha vazia
         }
         
-        await axios.put(`/api/usuarios/${usuarioEditando.id}`, dados);
+        await axios.put(`/usuarios/${usuarioEditando.id}`, dados);
         setSuccess('Usuário atualizado com sucesso!');
       } else {
         // Criar usuário
@@ -238,7 +238,7 @@ const Usuarios: React.FC = () => {
     }
 
     try {
-      await axios.delete(`/api/usuarios/${id}`);
+      await axios.delete(`/usuarios/${id}`);
       setSuccess('Usuário desativado com sucesso!');
       carregarUsuarios();
       setTimeout(() => setSuccess(''), 3000);
