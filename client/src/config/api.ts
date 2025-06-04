@@ -7,7 +7,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 // URLs da API
 const API_URLS = {
   development: 'http://localhost:5000/api',
-  production: process.env.REACT_APP_API_URL || 'https://seu-backend.onrender.com/api'
+  production: process.env.REACT_APP_API_URL || 'https://server-poy8.onrender.com/api'
 };
 
 // URL base da API
