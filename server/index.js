@@ -261,6 +261,15 @@ app.get('/debug-users', async (req, res) => {
     }
 });
 
+// Rota de teste simples para auth
+app.post('/test-auth-simple', async (req, res) => {
+    res.json({
+        success: true,
+        message: 'Rota de teste auth funcionando!',
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Rotas da API
 console.log('🔄 Carregando rotas da API...');
 
