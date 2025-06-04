@@ -154,6 +154,37 @@ io.on('connection', (socket) => {
     });
 });
 
+// Rota principal
+app.get('/', (req, res) => {
+    res.json({
+        success: true,
+        message: 'API do Sistema SMC funcionando!',
+        status: 'online',
+        timestamp: new Date().toISOString(),
+        version: '1.0.0'
+    });
+});
+
+// Rota de teste de banco
+app.get('/test-db', async (req, res) => {
+    try {
+        const [result] = await query('SELECT 1 as test');
+        res.json({
+            success: true,
+            message: 'Conexão com banco de dados funcionando!',
+            test_result: result,
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Erro na conexão com banco de dados',
+            error: error.message,
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
 // Rotas da API
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/usuarios', require('./routes/usuarios'));
