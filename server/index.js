@@ -262,8 +262,34 @@ app.get('/debug-users', async (req, res) => {
 });
 
 // Rotas da API
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/usuarios', require('./routes/usuarios'));
+console.log('🔄 Carregando rotas da API...');
+
+console.log('📂 Verificando se arquivo auth.js existe...');
+const fs = require('fs');
+const path = require('path');
+const authPath = path.join(__dirname, 'routes', 'auth.js');
+console.log('📍 Caminho do arquivo:', authPath);
+console.log('📁 Arquivo existe:', fs.existsSync(authPath));
+
+try {
+    console.log('🔄 Tentando importar ./routes/auth...');
+    const authRouter = require('./routes/auth');
+    console.log('✅ Importação bem-sucedida:', typeof authRouter);
+    
+    app.use('/api/auth', authRouter);
+    console.log('✅ Rota /api/auth carregada');
+} catch (error) {
+    console.error('❌ Erro ao carregar rota /api/auth:', error);
+    console.error('Stack trace:', error.stack);
+}
+
+try {
+    app.use('/api/usuarios', require('./routes/usuarios'));
+    console.log('✅ Rota /api/usuarios carregada');
+} catch (error) {
+    console.error('❌ Erro ao carregar rota /api/usuarios:', error);
+}
+
 app.use('/api/organizacoes', require('./routes/organizacoes'));
 app.use('/api/setores', require('./routes/setores'));
 app.use('/api/locais', require('./routes/locais'));
@@ -275,6 +301,8 @@ app.use('/api/gerador-inspecoes', require('./routes/gerador-inspecoes'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/configuracoes', require('./routes/configuracoes'));
 app.use('/api/notificacoes', require('./routes/notificacoes'));
+
+console.log('✅ Todas as rotas carregadas');
 
 // Rota para servir arquivos de upload
 app.use('/api/uploads', express.static('uploads'));
