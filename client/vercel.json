@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "name": "sistemasmc-frontend",
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "REACT_APP_API_URL": "https://seu-backend.onrender.com/api"
+  }
+} 

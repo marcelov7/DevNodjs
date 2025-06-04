@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+
+# Environment variables (local only)
+.env.local
+.env.development
+
+# Logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Temporary files
+.tmp/
+temp/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build outputs (if any)
+dist/
+build/
+
+# Uploads directory (keep structure but ignore content)
+uploads/*
+!uploads/.gitkeep
+!uploads/relatorios/
+uploads/relatorios/*
+!uploads/relatorios/.gitkeep 

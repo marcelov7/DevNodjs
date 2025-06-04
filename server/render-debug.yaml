@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: sistemasmc-api-debug
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run start-debug
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000 

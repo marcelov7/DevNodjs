@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: sistemasmc-api-minimal
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run start-minimal
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DB_HOST
+        value: srv1196.hstgr.io
+      - key: DB_PORT
+        value: 3306
+      - key: DB_USER
+        value: u845362736_sistemasmc
+      - key: DB_PASSWORD
+        value: ^rt2T;88K
+      - key: DB_DATABASE
+        value: u845362736_sistemasmc
+      - key: JWT_SECRET
+        value: seu_jwt_secret_super_seguro_aqui_change_this
+      - key: CORS_ORIGIN
+        value: https://seu-frontend.vercel.app 

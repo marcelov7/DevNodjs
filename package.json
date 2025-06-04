@@ -1,0 +1,29 @@
+{
+  "name": "sistema-relatorios",
+  "version": "1.0.0",
+  "description": "Sistema completo de relatórios com gestão de usuários, locais, equipamentos e motores",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm start",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install",
+    "build": "cd client && npm run build"
+  },
+  "keywords": [
+    "nodejs",
+    "react",
+    "mysql",
+    "relatórios",
+    "gestão"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "csv-parser": "^3.2.0",
+    "multer": "^2.0.0"
+  }
+}
