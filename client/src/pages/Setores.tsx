@@ -103,7 +103,7 @@ const Setores: React.FC = () => {
   const carregarSetores = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/setores`, {
+      const response = await fetch(`${API_BASE_URL}/setores`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -131,8 +131,8 @@ const Setores: React.FC = () => {
 
     try {
       const url = editandoSetor 
-        ? `${API_BASE_URL}/api/setores/${editandoSetor.id}`
-        : `${API_BASE_URL}/api/setores`;
+        ? `${API_BASE_URL}/setores/${editandoSetor.id}`
+        : `${API_BASE_URL}/setores`;
       
       const method = editandoSetor ? 'PUT' : 'POST';
 
@@ -173,7 +173,7 @@ const Setores: React.FC = () => {
     setSuccess('');
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/setores/${setor.id}`, {
+      const response = await fetch(`${API_BASE_URL}/setores/${setor.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -221,7 +221,7 @@ const Setores: React.FC = () => {
     setShowUsuariosModal(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/setores/${setor.id}/usuarios`, {
+      const response = await fetch(`${API_BASE_URL}/setores/${setor.id}/usuarios`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

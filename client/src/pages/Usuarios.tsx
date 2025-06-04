@@ -145,7 +145,7 @@ const Usuarios: React.FC = () => {
   const carregarSetores = async () => {
     try {
       setLoadingSetores(true);
-      const response = await fetch(`${API_BASE_URL}/api/setores/dropdown/ativos`, {
+      const response = await fetch(`${API_BASE_URL}/setores/dropdown/ativos`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
