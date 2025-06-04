@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import axios from 'axios';
-import { API_BASE_URL } from '../config/api';
+import api from '../config/api';
 
-// Configurar base URL do axios dinamicamente
-axios.defaults.baseURL = API_BASE_URL;
+// Não sobrescrever o axios.defaults.baseURL - usar a instância configurada
 
 interface Usuario {
   id: number;
@@ -51,9 +49,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Configurar axios com token
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     } else {
-      delete axios.defaults.headers.common['Authorization'];
+      delete api.defaults.headers.common['Authorization'];
     }
   }, [token]);
 
@@ -68,7 +66,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Admin Master tem todas as permissões
       if (usuario.nivel_acesso === 'admin_master') {
         // Buscar todos os recursos e ações para dar permissão total
-        const response = await axios.get('/configuracoes/permissoes');
+        const response = await api.get('/configuracoes/permissoes');
         if (response.data.success) {
           const { recursos, acoes } = response.data.data;
           const todasPermissoes: PermissoesUsuario = {};
@@ -85,7 +83,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       // Para outros usuários, buscar permissões específicas
-      const response = await axios.get('/auth/permissions');
+      const response = await api.get('/auth/permissions');
       
       if (response.data.success) {
         const permissoesCarregadas = response.data.data.permissoes || {};
@@ -104,7 +102,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const verificarToken = async () => {
       if (token) {
         try {
-          const response = await axios.post('/auth/verify');
+          const response = await api.post('/auth/verify');
           if (response.data.success) {
             setUsuario(response.data.data.usuario);
           } else {
@@ -132,7 +130,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setLoginLoading(true);
       
-      const response = await axios.post('/auth/login', {
+      const response = await api.post('/auth/login', {
         identifier,
         senha
       });
@@ -168,7 +166,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setToken(null);
       setPermissoes({});
       localStorage.removeItem('token');
-      delete axios.defaults.headers.common['Authorization'];
+      delete api.defaults.headers.common['Authorization'];
     } finally {
       setLogoutLoading(false);
     }
